@@ -42,6 +42,10 @@ class App {
     this.app.use(express.json());
     this.app.use(express.urlencoded({ extended: true, limit: "16kb" }));
     this.app.use(router);
+
+    this.app.get("/", (req, res) => {
+      res.send("Hello World");
+    });
   }
 
   async run() {
