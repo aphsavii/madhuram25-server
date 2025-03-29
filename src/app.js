@@ -33,6 +33,9 @@ class App {
         },
       });
     }
+    else{
+      this.io = new Server(this.server);
+    }
 
     this.io.use(socketAuth);
     this.app.use(express.static("public"));
