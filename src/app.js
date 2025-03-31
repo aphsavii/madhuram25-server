@@ -11,7 +11,7 @@ class App {
   PORT = (process.argv[2] || 3000) + Number(this.pm2Instance);
   constructor() {
     this.app = express();
-    this.server = createServer(this.REDIS_PORTapp);
+    this.server = createServer(this.app);
 
     // Apply CORS for Express
     const env = process.env.NODE_ENV || "prod";
@@ -44,7 +44,10 @@ class App {
     this.app.use(router);
 
     this.app.get("/", (req, res) => {
-      res.send("Hello World from instance"+ this.pm2Instance);
+      const text = "Hello World from instance " + this.pm2Instance;
+      console.log(text);
+      res.send(text);
+      // res.send("Hello World from instance"+ this.pm2Instance);
     });
   }
 
