@@ -44,7 +44,7 @@ class App {
     this.app.use(router);
 
     this.app.get("/", (req, res) => {
-      res.send("Hello World");
+      res.send("Hello World from instance"+ this.pm2Instance);
     });
   }
 
