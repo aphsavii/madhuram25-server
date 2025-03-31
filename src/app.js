@@ -11,7 +11,7 @@ class App {
   PORT = (process.argv[2] || 3000) + Number(this.pm2Instance);
   constructor() {
     this.app = express();
-    this.server = createServer(this.app);
+    this.server = createServer(this.REDIS_PORTapp);
 
     // Apply CORS for Express
     const env = process.env.NODE_ENV || "prod";
