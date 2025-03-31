@@ -7,8 +7,8 @@ import cors from "cors";
 import socketAuth from "./middleware/socket.middleware.js";
 import router from "./routes/routes.js";
 class App {
-  PORT = process.argv[2] || 3000;
-
+  pm2Instance = process.env.NODE_APP_INSTANCE || 0;
+  PORT = (process.argv[2] || 3000) + Number(this.pm2Instance);
   constructor() {
     this.app = express();
     this.server = createServer(this.app);
@@ -33,7 +33,7 @@ class App {
         },
       });
     }
-    else{
+    else {
       this.io = new Server(this.server);
     }
 
