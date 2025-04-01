@@ -18,7 +18,14 @@ const voteController = async (socket) => {
 
         if (!eventId || !performanceId) {
           console.warn("⚠️ Invalid vote data:", data);
-          socket.emit("vote:error", { message: "Invalid vote data" });
+          // socket.emit("vote:error", { message: "Invalid vote data" });
+          return;
+        }
+
+        const isVotingAllowed = await redisService.get(`voting-allowed:${eventId}`);
+        if (!isVotingAllowed) {
+          console.warn("⚠️ Voting is not allowed for event", eventId);
+          socket.emit("vote:error", { message: "Voting has not started yet." });
           return;
         }
 
@@ -52,14 +59,10 @@ const voteController = async (socket) => {
           eventId,
           performanceId,
           votes: updatedVotes,
-          user: { userId, email },
         };
 
         // Publish the vote event
         redisService.publish("votes", voteData);
-
-        // Emit success to the voter
-        socket.emit("vote:success", voteData);
       } catch (error) {
         console.error("❌ Error processing vote:", error);
         socket.emit("vote:error", { message: "Internal server error" });

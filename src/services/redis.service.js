@@ -70,18 +70,24 @@ class RedisService {
     if (!this.subscribers[channel]) {
       this.subscribers[channel] = [];
       
-      // Set up the Redis subscription only once
+      // Set up the Redis subscription only once per channel
       this.subClient.subscribe(channel, (message) => {
-        const parsedMessage = JSON.parse(message);
-        
-        // Call all registered handlers for this channel
-        this.subscribers[channel].forEach(h => h(parsedMessage));
+        try {
+          const parsedMessage = JSON.parse(message);
+          
+          // Call all registered handlers for this channel
+          this.subscribers[channel].forEach(h => h(parsedMessage));
+        } catch (error) {
+          console.error('Error processing Redis message:', error);
+        }
       });
     }
-
-    // Add the new handler to the list
-    this.subscribers[channel].push(handler);
-
+  
+    // Add the new handler to the list if it doesn't already exist
+    if (!this.subscribers[channel].includes(handler)) {
+      this.subscribers[channel].push(handler);
+    }
+  
     // Return an unsubscribe function
     return () => {
       this.subscribers[channel] = this.subscribers[channel].filter(h => h !== handler);
@@ -93,7 +99,7 @@ class RedisService {
       }
     };
   }
-
+  
   // Get Redis adapter for Socket.IO
   getAdapter() {
     return createAdapter(this.pubClient, this.subClient);

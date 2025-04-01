@@ -46,4 +46,7 @@ const eventsData = [
     ]
   };
 
-  export { eventsData, performersData };
+  const admins = ['2331080@sliet.ac.in'];
+  const judges = ['2010215@sliet.ac.in'];
+
+  export { eventsData, performersData, judges, admins };
